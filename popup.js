@@ -32,6 +32,7 @@ function showImageInfo() {
     let med = 'orange';
     let small = 'green';
     let unknown = 'purple';
+    var colour = unknown;
 
     for(var i = 0; i < allImages.length ; i++) {
         var thisImg  = allImages[i];      
@@ -55,39 +56,43 @@ function showImageInfo() {
             var iTime = performance.getEntriesByName(url)[0];
             console.log(iTime.transferSize + ' ' +iTime.encodedBodySize + ' ' + iTime.decodedBodySize ); //or encodedBodySize, decodedBodySize
             fileSize = (iTime.transferSize/1000).toFixed(2);
-            infoText += fileSize + 'kb';
+            infoText += fileSize + 'kb,';
         }
 
         infoText += " " + w + "x" + h + "px. Source: " + nw + "x" + nh + "px";
         
         //Create extra div to display info
         const parent = thisImg.parentNode;
-        const wrapper = document.createElement('div');  
+        const wrapper = document.createElement('div'); 
+        wrapper.style.position = 'relative'
 
         const infoDiv = document.createElement("div");
-        console.dir(infoText);
         const infoContent = document.createTextNode(infoText);
         infoDiv.appendChild(infoContent);
+        infoDiv.classList.add('WiiInfo');
+
+        //File size warning colours
+        if(fileSize > 100) { colour = large; }
+        if(fileSize < 100) { colour = med; }
+        if(fileSize < 10) { colour = small; }
+        if(fileSize == 0) { colour = unknown; }
 
         //Info div Styling
         infoDiv.attributeStyleMap.clear()
         infoDiv.style.position = 'absolute'
         infoDiv.style.backgroundColor = '#ffffff';
         infoDiv.style.padding = '2px';
-        infoDiv.style.borderColor = '#000000';
+        infoDiv.style.borderColor = colour;
         infoDiv.style.borderWidth = '1px';
         infoDiv.style.borderWidth = '#000000';
-        infoDiv.style.left  = x;
-        infoDiv.style.top = y + h;
+        infoDiv.style.borderStyle = 'solid';
+        infoDiv.style.left = x;
+        //infoDiv.style.top = (y + h - 21) + "px";
+        infoDiv.style.top = h-21 + "px";
         infoDiv.style.fontSize = 'small';
-        infoDiv.style.opacity = "0.8";
-        infoDiv.classList.add('WiiInfo');
-
-        //File size warning colours
-        if(fileSize > 100) { infoDiv.style.color = large; }
-        if(fileSize < 100) { infoDiv.style.color = med; }
-        if(fileSize < 10) { infoDiv.style.color = small; }
-        if(fileSize == 0) { infoDiv.style.color = unknown; }
+        infoDiv.style.lineHeight = '1.2em';
+        infoDiv.style.opacity = "0.9";        
+        infoDiv.style.color = colour;
        
         
         // set the wrapper as child (instead of the element)
@@ -97,7 +102,7 @@ function showImageInfo() {
         wrapper.appendChild(infoDiv);
         thisImg.title = infoText;
         //document.body.insertBefore(infoDiv, thisImg);
-        
+        console.dir(infoText);
     }
 }
 
